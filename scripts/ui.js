@@ -187,6 +187,7 @@ if (!window.PharmaNerdUI) {
 
         const mobileQuery = window.matchMedia("(max-width: 860px)");
         let dismissedOnMobile = false;
+        let scrollTicking = false;
 
         const backdrop = document.createElement("button");
         backdrop.type = "button";
@@ -245,12 +246,31 @@ if (!window.PharmaNerdUI) {
             if (!isMobile()) {
                 dismissedOnMobile = false;
                 setOpen(false, false);
+                document.body.classList.remove("mobile-nav-collapsed");
                 return;
             }
 
             if (!dismissedOnMobile) {
                 setOpen(true, false);
             }
+
+            updateCollapsedState();
+        }
+
+        function updateCollapsedState() {
+            if (!isMobile()) return;
+            const shouldCollapse = window.scrollY > 36;
+            document.body.classList.toggle("mobile-nav-collapsed", shouldCollapse);
+        }
+
+        function onScroll() {
+            if (!isMobile()) return;
+            if (scrollTicking) return;
+            scrollTicking = true;
+            window.requestAnimationFrame(() => {
+                updateCollapsedState();
+                scrollTicking = false;
+            });
         }
 
         backdrop.addEventListener("click", () => setOpen(false, true));
@@ -262,6 +282,8 @@ if (!window.PharmaNerdUI) {
         } else if (typeof mobileQuery.addListener === "function") {
             mobileQuery.addListener(syncMobileNav);
         }
+
+        window.addEventListener("scroll", onScroll, { passive: true });
 
         syncMobileNav();
     }

@@ -402,6 +402,11 @@ if (!window.PharmaNerdComponents) {
         const detailMode = window.PharmaNerdSettings && typeof window.PharmaNerdSettings.getSetting === "function"
             ? window.PharmaNerdSettings.getSetting("detailMode")
             : "floating";
+        const isMobileViewport = window.matchMedia && window.matchMedia("(max-width: 860px)").matches;
+        if (isMobileViewport) {
+            window.location.href = `drug.html?drug=${encodeURIComponent(name)}`;
+            return;
+        }
         if (detailMode === "page") {
             window.location.href = `drug.html?drug=${encodeURIComponent(name)}`;
             return;
