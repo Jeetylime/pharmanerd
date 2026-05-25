@@ -1,0 +1,9 @@
+{
+    "name": "pharmanerd",
+    "version": "1.0.0",
+    "description": "PharmaNerd - Pharmacology Encyclopedia",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    }
+}

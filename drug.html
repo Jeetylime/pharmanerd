@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PharmaNerd | Drug Detail</title>
+    <script>
+        if (new URLSearchParams(window.location.search).get("popup") === "1") {
+            document.documentElement.classList.add("popup-mode");
+        }
+    </script>
+    <link rel="stylesheet" href="styles/main.css" />
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">PN</div>
+                <div>
+                    <h1>PharmaNerd</h1>
+                    <p>Pharmacology Encyclopedia</p>
+                </div>
+            </div>
+            <nav class="nav">
+                <div class="nav-left">
+                    <a class="nav-link" href="index.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 10L12 4l8 6v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
+                        </svg>
+                        Browse
+                    </a>
+                    <a class="nav-link" href="compare.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h6v16H4zM14 8h6v12h-6z" />
+                        </svg>
+                        Compare
+                    </a>
+                    <a class="nav-link" href="interactions.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 7h10v10H7z" />
+                            <path d="M3 12h4M17 12h4M12 3v4M12 17v4" />
+                        </svg>
+                        Interactions
+                    </a>
+
+                    <a class="nav-link" href="receptors.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 3c4 0 7 3 7 7 0 3-2 5-4 6v3H9v-3c-2-1-4-3-4-6 0-4 3-7 7-7z" />
+                            <path d="M9 21h6" />
+                        </svg>
+                        Receptors
+                    </a>
+                    <a class="nav-link" href="classes.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                        </svg>
+                        Classes
+                    </a>
+                    <a class="nav-link" href="history.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 6v6l4 2" />
+                        </svg>
+                        History
+                    </a>
+                </div>
+                <div class="nav-right" style="display:flex;align-items:center;gap:12px;">
+                    <input id="topSearchInput" class="top-search" type="search" placeholder="Search by name or alias..."
+                        aria-label="Search drugs" />
+                </div>
+            </nav>
+        </aside>
+        <main class="main">
+            <header class="page-header">
+                <div class="page-title">
+                    <h2 id="drugTitle">Drug Detail</h2>
+                    <p id="drugSubtitle">Mechanism, effects, and clinical notes.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn secondary" id="favoriteBtn">Stash</button>
+                    <a class="btn secondary" href="index.html">Back to browse</a>
+                </div>
+            </header>
+
+            <section class="glass hero" id="drugHero"></section>
+
+            <section class="section glass">
+                <div class="section-head">
+                    <h3>Clinical snapshot</h3>
+                </div>
+                <div class="snapshot-grid" id="drugSnapshot"></div>
+            </section>
+
+            <section class="section glass">
+                <div class="section-head">
+                    <h3>Mechanism</h3>
+                </div>
+                <p id="mechanismText"></p>
+                <div class="section">
+                    <div class="section-head">
+                        <h3>Receptor diagram</h3>
+                    </div>
+                    <div class="receptor-diagram" id="receptorDiagram"></div>
+                </div>
+            </section>
+
+            <section class="section glass">
+                <div class="section-head">
+                    <h3>Effects timeline</h3>
+                </div>
+                <div class="timeline"></div>
+                <div class="timeline-labels" id="timelineLabels"></div>
+            </section>
+
+            <section class="section glass">
+                <div class="section-head">
+                    <h3>Pharmacokinetics</h3>
+                </div>
+                <div class="pk-grid" id="pkGrid"></div>
+            </section>
+
+            <section class="section glass">
+                <div class="section-head">
+                    <h3>Effects breakdown</h3>
+                </div>
+                <div class="effects-columns">
+                    <div class="effects-column">
+                        <h4>Positive</h4>
+                        <div class="tags" id="effectsPositive"></div>
+                    </div>
+                    <div class="effects-column">
+                        <h4>Neutral</h4>
+                        <div class="tags" id="effectsNeutral"></div>
+                    </div>
+                    <div class="effects-column">
+                        <h4>Negative</h4>
+                        <div class="tags" id="effectsNegative"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section glass">
+                <div class="section-head">
+                    <h3>Interactions panel</h3>
+                </div>
+                <div class="interaction-list" id="interactionList"></div>
+            </section>
+
+            <section class="section glass">
+                <div class="section-head">
+                    <h3>Tolerance & dependence</h3>
+                </div>
+                <p id="toleranceText"></p>
+                <div class="section">
+                    <div class="section-head">
+                        <h4>Physical dependence</h4>
+                    </div>
+                    <div class="progress-bar"><span id="physicalBar"></span></div>
+                </div>
+                <div class="section">
+                    <div class="section-head">
+                        <h4>Psychological dependence</h4>
+                    </div>
+                    <div class="progress-bar"><span id="psychBar"></span></div>
+                </div>
+                <p id="dependenceNotes" class="mono"></p>
+            </section>
+
+            <section class="section glass">
+                <details class="accordion">
+                    <summary>Overdose info</summary>
+                    <div id="overdoseInfo"></div>
+                </details>
+            </section>
+
+            <section class="section glass">
+                <div class="section-head">
+                    <h3>Fun facts</h3>
+                </div>
+                <div class="carousel" id="funFacts"></div>
+            </section>
+
+            <section class="section glass">
+                <div class="section-head">
+                    <h3>Related drugs</h3>
+                </div>
+                <div class="chips" id="relatedDrugs"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="scripts/data.js"></script>
+    <script src="scripts/components.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/rxnorm.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/topNavSearch.js"></script>
+    <script>
+        function renderSnapshot(items) {
+            const snapshot = document.querySelector("#drugSnapshot");
+            if (!snapshot) return;
+            snapshot.innerHTML = "";
+            items.forEach((item) => {
+                const card = document.createElement("div");
+                card.className = "snapshot-card";
+                if (item.accent) {
+                    card.style.borderColor = item.accent;
+                    card.style.boxShadow = `inset 0 0 0 1px ${item.accent}22`;
+                }
+                const label = document.createElement("h4");
+                label.textContent = item.label;
+                const value = document.createElement("p");
+                value.textContent = item.value || "N/A";
+                if (item.tooltip) {
+                    card.setAttribute("data-tooltip", item.tooltip);
+                }
+                card.append(label, value);
+                snapshot.appendChild(card);
+            });
+        }
+
+        async function initDrugPage() {
+            const { DRUGS, matchDrugByAlias } = window.PharmaNerdData;
+            const {
+                addRecent,
+                buildBadge,
+                toggleFavorite,
+                updateFavoriteButton,
+                getClassIcon,
+                getQueryParam,
+                getReceptorTooltip,
+                getPkTooltip,
+                severityClass,
+                wireDrugLinks,
+            } = window.PharmaNerdUI;
+            const { getInteractionsForDrug } = window.PharmaNerdRx || {};
+
+            const hero = document.querySelector("#drugHero");
+            const title = document.querySelector("#drugTitle");
+            const subtitle = document.querySelector("#drugSubtitle");
+            const mechanismText = document.querySelector("#mechanismText");
+            const receptorDiagram = document.querySelector("#receptorDiagram");
+            const timelineLabels = document.querySelector("#timelineLabels");
+            const snapshot = document.querySelector("#drugSnapshot");
+            const pkGrid = document.querySelector("#pkGrid");
+            const effectsPositive = document.querySelector("#effectsPositive");
+            const effectsNeutral = document.querySelector("#effectsNeutral");
+            const effectsNegative = document.querySelector("#effectsNegative");
+            const interactionList = document.querySelector("#interactionList");
+            const favoriteBtn = document.querySelector("#favoriteBtn");
+            const toleranceText = document.querySelector("#toleranceText");
+            const physicalBar = document.querySelector("#physicalBar");
+            const psychBar = document.querySelector("#psychBar");
+            const dependenceNotes = document.querySelector("#dependenceNotes");
+            const overdoseInfo = document.querySelector("#overdoseInfo");
+            const funFacts = document.querySelector("#funFacts");
+            const relatedDrugs = document.querySelector("#relatedDrugs");
+
+            const query = getQueryParam("drug");
+            const rxcui = getQueryParam("rxcui");
+            const external = getQueryParam("external");
+
+            // If we have an external param, load external drug data from openFDA
+            if (external && query) {
+                loadExternalDrug(query);
+                return;
+            }
+
+            // If we have an rxcui param, load external drug data
+            if (rxcui && !query) {
+                loadExternalDrug(rxcui);
+                return;
+            }
+
+            // If we have a local query, prefer fetching the canonical drug from the API
+            if (query && !external) {
+                try {
+                    const resp = await fetch(`/api/drug?name=${encodeURIComponent(query)}`);
+                    if (resp.ok) {
+                        const payload = await resp.json();
+                        if (payload && payload.drug) {
+                            renderDrug(payload.drug);
+                            wireDrugLinks();
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Failed to load drug from API, falling back to local data", e);
+                }
+            }
+
+            const drug = matchDrugByAlias(query) || DRUGS[0];
+
+            if (drug) {
+                renderDrug(drug);
+            }
+
+            wireDrugLinks();
+        }
+
+        async function loadExternalDrug(drugName) {
+            const hero = document.querySelector("#drugHero");
+            const title = document.querySelector("#drugTitle");
+            const subtitle = document.querySelector("#drugSubtitle");
+            const mechanismText = document.querySelector("#mechanismText");
+            const receptorDiagram = document.querySelector("#receptorDiagram");
+            const timelineLabels = document.querySelector("#timelineLabels");
+            const snapshot = document.querySelector("#drugSnapshot");
+            const pkGrid = document.querySelector("#pkGrid");
+            const effectsPositive = document.querySelector("#effectsPositive");
+            const effectsNeutral = document.querySelector("#effectsNeutral");
+            const effectsNegative = document.querySelector("#effectsNegative");
+            const interactionList = document.querySelector("#interactionList");
+            const favoriteBtn = document.querySelector("#favoriteBtn");
+            const toleranceText = document.querySelector("#toleranceText");
+            const physicalBar = document.querySelector("#physicalBar");
+            const psychBar = document.querySelector("#psychBar");
+            const dependenceNotes = document.querySelector("#dependenceNotes");
+            const overdoseInfo = document.querySelector("#overdoseInfo");
+            const funFacts = document.querySelector("#funFacts");
+            const relatedDrugs = document.querySelector("#relatedDrugs");
+
+            // Show loading state
+            title.textContent = "Loading...";
+            subtitle.textContent = "Fetching data from openFDA...";
+            if (favoriteBtn) favoriteBtn.style.display = "none";
+
+            // show hero skeleton
+            if (hero) {
+                hero.innerHTML = "";
+                if (window.PharmaNerdUI && window.PharmaNerdUI.createSkeletonCard) {
+                    const sk = window.PharmaNerdUI.createSkeletonCard();
+                    sk.style.width = '100%';
+                    sk.style.height = '88px';
+                    sk.classList.add('hero-skeleton');
+                    hero.appendChild(sk);
+                } else {
+                    const p = document.createElement('div');
+                    p.className = 'hero-skeleton';
+                    p.textContent = 'Loading...';
+                    hero.appendChild(p);
+                }
+            }
+
+            let description = "";
+            let mechanismOfAction = "";
+            let pharmacodynamics = "";
+            let pharmacokineticsText = "";
+            let effectProfile = [];
+            let adverseEffects = [];
+            let pharmClass = [];
+            let routes = [];
+            let activeIngredient = "";
+            let genericName = "";
+            let brandName = "";
+            let warnings = "";
+            let boxedWarning = "";
+            let dosageInfo = "";
+            let drugInteractionsText = "";
+            let contraindications = "";
+            let overdosageText = "";
+            let rxcui = "";
+            let productType = "";
+
+            try {
+                // Fetch drug label and NDC info from openFDA
+                const labelResp = await fetch(`/api/drug-label?name=${encodeURIComponent(drugName)}`);
+                const data = await labelResp.json();
+                if (!data.label && !data.ndc) {
+                    throw new Error("Drug not found in openFDA");
+                }
+                const label = data.label || {};
+                const ndc = data.ndc || {};
+
+                // Extract active ingredient - try multiple sources
+                if (label.active_ingredient && label.active_ingredient.length > 0) {
+                    activeIngredient = label.active_ingredient[0];
+                } else if (label.openfda && label.openfda.substance_name && label.openfda.substance_name.length > 0) {
+                    activeIngredient = label.openfda.substance_name[0];
+                } else if (ndc.active_ingredients && ndc.active_ingredients.length > 0) {
+                    activeIngredient = ndc.active_ingredients[0].name || drugName;
+                } else {
+                    activeIngredient = drugName;
+                }
+
+                // Extract generic name - try label.openfda first, then ndc
+                if (label.openfda && label.openfda.generic_name && label.openfda.generic_name.length > 0) {
+                    genericName = label.openfda.generic_name[0];
+                } else {
+                    genericName = ndc.generic_name || drugName;
+                }
+
+                // Extract brand name from label.openfda
+                if (label.openfda && label.openfda.brand_name && label.openfda.brand_name.length > 0) {
+                    brandName = label.openfda.brand_name[0];
+                } else {
+                    brandName = ndc.brand_name || "";
+                }
+
+                // Extract rxcui
+                if (label.openfda && label.openfda.rxcui && label.openfda.rxcui.length > 0) {
+                    rxcui = label.openfda.rxcui[0];
+                } else if (ndc.openfda && ndc.openfda.rxcui && ndc.openfda.rxcui.length > 0) {
+                    rxcui = ndc.openfda.rxcui[0];
+                }
+
+                // Extract product type
+                if (label.openfda && label.openfda.product_type && label.openfda.product_type.length > 0) {
+                    productType = label.openfda.product_type[0];
+                } else {
+                    productType = ndc.product_type || "";
+                }
+
+                // Extract routes - try label.openfda first, then ndc
+                if (label.openfda && label.openfda.route && label.openfda.route.length > 0) {
+                    routes = label.openfda.route;
+                } else {
+                    routes = ndc.route || [];
+                }
+
+                // Extract pharmacological class - combine NDC pharm_class with openfda fields
+                pharmClass = ndc.pharm_class || [];
+                if (pharmClass.length === 0 && label.openfda) {
+                    const moa = label.openfda.pharm_class_moa || [];
+                    const cs = label.openfda.pharm_class_cs || [];
+                    const epc = label.openfda.pharm_class_epc || [];
+                    pharmClass = [...moa, ...cs, ...epc];
+                }
+
+                // Extract description from indications_and_usage
+                if (label.indications_and_usage && label.indications_and_usage.length > 0) {
+                    description = label.indications_and_usage[0];
+                }
+
+                // Extract mechanism of action
+                if (label.mechanism_of_action && label.mechanism_of_action.length > 0) {
+                    mechanismOfAction = label.mechanism_of_action[0];
+                } else if (label.clinical_pharmacology && label.clinical_pharmacology.length > 0) {
+                    const cp = label.clinical_pharmacology[0];
+                    const moaMatch = cp.match(/Mechanism of Action[\s\-–]*(.*?)(?:\n\n|\r\n\r\n|Pharmacodynamics|$)/is);
+                    if (moaMatch && moaMatch[1]) {
+                        mechanismOfAction = moaMatch[1].trim();
+                    }
+                }
+
+                // Extract pharmacodynamics
+                if (label.pharmacodynamics && label.pharmacodynamics.length > 0) {
+                    pharmacodynamics = label.pharmacodynamics[0];
+                }
+
+                // Extract pharmacokinetics
+                if (label.pharmacokinetics && label.pharmacokinetics.length > 0) {
+                    pharmacokineticsText = label.pharmacokinetics[0];
+                }
+
+                // Extract warnings
+                if (label.warnings && label.warnings.length > 0) {
+                    warnings = label.warnings[0];
+                }
+
+                // Extract boxed warning (most severe)
+                if (label.boxed_warning && label.boxed_warning.length > 0) {
+                    boxedWarning = label.boxed_warning[0];
+                }
+
+                // Extract dosage info
+                if (label.dosage_and_administration && label.dosage_and_administration.length > 0) {
+                    dosageInfo = label.dosage_and_administration[0];
+                }
+
+                // Extract drug interactions from label
+                if (label.drug_interactions && label.drug_interactions.length > 0) {
+                    drugInteractionsText = label.drug_interactions[0];
+                }
+
+                // Extract contraindications
+                if (label.contraindications && label.contraindications.length > 0) {
+                    contraindications = label.contraindications[0];
+                }
+
+                // Extract overdosage info
+                if (label.overdosage && label.overdosage.length > 0) {
+                    overdosageText = label.overdosage[0];
+                }
+
+                // Extract adverse effects from adverse_reactions
+                if (label.adverse_reactions && label.adverse_reactions.length > 0) {
+                    const arText = label.adverse_reactions[0];
+                    const commonEffects = arText
+                        .split(/[;,.\n]/)
+                        .map(s => s.trim())
+                        .filter(s => s.length > 3 && s.length < 60 && !s.match(/^\d/) && !s.match(/^(adverse|reaction|the|and|or|with|were|reported|patients|treatment|clinical|study|studies|during|following|include|including|these|those|which|their|other|more|most|less|some|such|than|also|been|have|has|had|was|were|will|would|could|should|may|might|can|are|is)/i));
+                    adverseEffects = commonEffects.slice(0, 12);
+                }
+
+                // Extract positive/therapeutic effects from indications_and_usage
+                if (description) {
+                    const indicationEffects = description
+                        .split(/[;,.\n]/)
+                        .map(s => s.trim())
+                        .filter(s => s.length > 3 && s.length < 80 && !s.match(/^\d/) && !s.match(/^(the|and|or|with|for|this|that|which|their|other|more|most|less|some|such|than|also|been|have|has|had|was|were|will|would|could|should|may|might|can|are|is|been|indicated|treatment|therapy|patients|should|used|use)/i));
+                    effectProfile = indicationEffects.slice(0, 8);
+                }
+
+                const displayName = brandName || genericName || drugName;
+                document.title = `PharmaNerd | ${displayName}`;
+                title.textContent = displayName;
+                subtitle.textContent = genericName !== displayName ? genericName : "FDA-Approved Drug";
+
+                // Build hero section
+                hero.innerHTML = "";
+                const heroCard = document.createElement("div");
+                heroCard.className = "hero-title";
+                heroCard.innerHTML = `
+                    <h2>${displayName}</h2>
+                    <p class="mono">${genericName !== displayName ? genericName : (productType || "FDA-Approved Drug")}</p>
+                `;
+                const badge = document.createElement("span");
+                badge.className = "badge";
+                badge.style.setProperty("--badge-color", "#22c55e");
+                badge.innerHTML = `<span class="dot"></span>FDA`;
+                heroCard.appendChild(badge);
+                hero.appendChild(heroCard);
+
+                const metaCard = document.createElement("div");
+                let metaHTML = "";
+                if (activeIngredient && activeIngredient !== displayName) {
+                    metaHTML += `
+                        <div class="flag-row">
+                            <span style="color:#22c55e;font-weight:bold;">Active Ingredient</span>
+                            <span>${activeIngredient}</span>
+                        </div>
+                    `;
+                }
+                if (productType) {
+                    metaHTML += `
+                        <div class="flag-row">
+                            <span style="color:#22c55e;font-weight:bold;">Type</span>
+                            <span>${productType}</span>
+                        </div>
+                    `;
+                }
+                if (pharmClass.length > 0) {
+                    metaHTML += `
+                        <div class="flag-row">
+                            <span style="color:#22c55e;font-weight:bold;">Class</span>
+                            <span>${pharmClass.join(", ")}</span>
+                        </div>
+                    `;
+                }
+                if (routes.length > 0) {
+                    metaHTML += `
+                        <div class="flag-row">
+                            <span style="color:#22c55e;font-weight:bold;">Route</span>
+                            <span>${routes.join(", ")}</span>
+                        </div>
+                    `;
+                }
+                if (rxcui) {
+                    metaHTML += `
+                        <div class="flag-row">
+                            <span style="color:#22c55e;font-weight:bold;">RxCUI</span>
+                            <span>${rxcui}</span>
+                        </div>
+                    `;
+                }
+                metaCard.innerHTML = metaHTML;
+                hero.appendChild(metaCard);
+
+                // Mechanism - show mechanism of action, then indications as fallback
+                if (mechanismOfAction) {
+                    mechanismText.textContent = mechanismOfAction;
+                } else if (description) {
+                    mechanismText.textContent = description;
+                } else {
+                    mechanismText.textContent = `This drug contains ${activeIngredient}. Consult the FDA label for more information.`;
+                }
+
+                // Receptor diagram - show pharmacological class
+                receptorDiagram.innerHTML = "";
+                if (pharmClass.length > 0) {
+                    pharmClass.forEach((cls) => {
+                        const pill = document.createElement("div");
+                        pill.className = "receptor-pill";
+                        pill.textContent = cls;
+                        receptorDiagram.appendChild(pill);
+                    });
+                } else {
+                    receptorDiagram.innerHTML = "<p style='color:var(--muted);font-size:13px;'>No drug class data available from FDA.</p>";
+                }
+
+                // Timeline - show generic info
+                timelineLabels.innerHTML = `
+                    <span>Source: openFDA</span>
+                    <span>${displayName}</span>
+                    <span>${routes.length > 0 ? routes.join(", ") : "N/A"}</span>
+                `;
+
+                // PK Grid - show pharmacokinetics data from FDA label
+                pkGrid.innerHTML = "";
+                const pkItems = [];
+                if (pharmacokineticsText) {
+                    // Parse pharmacokinetics text for key info
+                    const pkText = pharmacokineticsText;
+                    // Try to extract half-life
+                    const halfLifeMatch = pkText.match(/half[- ]?life[^:]*?[:\s]+([^.]+)/i);
+                    if (halfLifeMatch) {
+                        pkItems.push({ label: "Half-life", value: halfLifeMatch[1].trim() });
+                    }
+                    // Try to extract bioavailability
+                    const bioMatch = pkText.match(/bioavailability[^:]*?[:\s]+([^.]+)/i);
+                    if (bioMatch) {
+                        pkItems.push({ label: "Bioavailability", value: bioMatch[1].trim() });
+                    }
+                    // Try to extract metabolism info
+                    const metabMatch = pkText.match(/metabolism[^:]*?[:\s]+([^.]+)/i);
+                    if (metabMatch) {
+                        pkItems.push({ label: "Metabolism", value: metabMatch[1].trim() });
+                    }
+                    // Try to extract absorption info
+                    const absMatch = pkText.match(/absorption[^:]*?[:\s]+([^.]+)/i);
+                    if (absMatch) {
+                        pkItems.push({ label: "Absorption", value: absMatch[1].trim() });
+                    }
+                    // Try to extract excretion info
+                    const excrMatch = pkText.match(/excretion[^:]*?[:\s]+([^.]+)/i);
+                    if (excrMatch) {
+                        pkItems.push({ label: "Excretion", value: excrMatch[1].trim() });
+                    }
+                    // If we couldn't parse specific fields, show the full PK text
+                    if (pkItems.length === 0) {
+                        pkItems.push({ label: "Pharmacokinetics", value: pkText.length > 300 ? pkText.slice(0, 300) + "..." : pkText });
+                    }
+                }
+                // Always add route and dosage
+                if (routes.length > 0) {
+                    pkItems.push({ label: "Route", value: routes.join(", ") });
+                }
+                if (dosageInfo) {
+                    pkItems.push({ label: "Dosage", value: dosageInfo.length > 150 ? dosageInfo.slice(0, 150) + "..." : dosageInfo });
+                }
+                // Fallback if no PK data at all
+                if (pkItems.length === 0) {
+                    pkItems.push({ label: "Active Ingredient", value: activeIngredient });
+                    pkItems.push({ label: "Generic Name", value: genericName });
+                    pkItems.push({ label: "Route", value: routes.join(", ") || "N/A" });
+                    pkItems.push({ label: "Dosage", value: "See FDA label" });
+                }
+                pkItems.forEach((item) => {
+                    const card = document.createElement("div");
+                    card.className = "pk-card";
+                    card.innerHTML = `
+                        <h4>${item.label}</h4>
+                        <p>${item.value}</p>
+                    `;
+                    pkGrid.appendChild(card);
+                });
+
+                // Effects - properly separate positive (indications) and negative (adverse reactions)
+                effectsPositive.innerHTML = "";
+                effectsNeutral.innerHTML = "";
+                effectsNegative.innerHTML = "";
+                if (effectProfile.length > 0) {
+                    effectProfile.forEach((effect) => {
+                        const tag = document.createElement("span");
+                        tag.className = "tag";
+                        tag.textContent = effect;
+                        effectsPositive.appendChild(tag);
+                    });
+                } else {
+                    effectsPositive.innerHTML = "<span class='tag'>See FDA label for indications</span>";
+                }
+                if (adverseEffects.length > 0) {
+                    adverseEffects.forEach((effect) => {
+                        const tag = document.createElement("span");
+                        tag.className = "tag";
+                        tag.textContent = effect;
+                        effectsNegative.appendChild(tag);
+                    });
+                } else {
+                    effectsNegative.innerHTML = "<span class='tag'>See FDA label for adverse reactions</span>";
+                }
+                // Show pharmacodynamics in neutral column if available
+                if (pharmacodynamics) {
+                    const pdEffects = pharmacodynamics
+                        .split(/[;,.\n]/)
+                        .map(s => s.trim())
+                        .filter(s => s.length > 3 && s.length < 60 && !s.match(/^\d/) && !s.match(/^(the|and|or|with|for|this|that|which|their|other|more|most|less|some|such|than|also|been|have|has|had|was|were|will|would|could|should|may|might|can|are|is|studies|doses|dose|clinical|demonstrated|shown|suggest)/i));
+                    pdEffects.slice(0, 6).forEach((effect) => {
+                        const tag = document.createElement("span");
+                        tag.className = "tag";
+                        tag.textContent = effect;
+                        effectsNeutral.appendChild(tag);
+                    });
+                }
+                if (effectsNeutral.children.length === 0) {
+                    effectsNeutral.innerHTML = "<span class='tag'>See FDA label for details</span>";
+                }
+
+                // Interactions - show label drug_interactions text first, then load from openFDA adverse events
+                interactionList.innerHTML = "";
+                if (drugInteractionsText) {
+                    const labelRow = document.createElement("div");
+                    labelRow.className = "interaction-item";
+                    labelRow.innerHTML = `
+                        <div>
+                            <strong>FDA Label: Drug Interactions</strong>
+                            <p>${drugInteractionsText.length > 500 ? drugInteractionsText.slice(0, 500) + "..." : drugInteractionsText}</p>
+                        </div>
+                        <span class="severity severity-high">Label</span>
+                    `;
+                    interactionList.appendChild(labelRow);
+                }
+                if (contraindications) {
+                    const ciRow = document.createElement("div");
+                    ciRow.className = "interaction-item";
+                    ciRow.innerHTML = `
+                        <div>
+                            <strong>Contraindications</strong>
+                            <p>${contraindications.length > 500 ? contraindications.slice(0, 500) + "..." : contraindications}</p>
+                        </div>
+                        <span class="severity severity-high">Contraindicated</span>
+                    `;
+                    interactionList.appendChild(ciRow);
+                }
+                async function renderExternalInteractions() {
+                    if (!interactionList) return;
+                    const loadingEl = document.createElement("div");
+                    loadingEl.className = "glass";
+                    loadingEl.textContent = "Loading co-occurring drug data from FDA adverse events...";
+                    interactionList.appendChild(loadingEl);
+                    try {
+                        const resp = await fetch(`/api/drug-interactions?name=${encodeURIComponent(genericName || drugName)}`);
+                        if (!resp.ok) throw new Error("Failed");
+                        const data = await resp.json();
+                        const interactions = data.results || [];
+                        interactionList.removeChild(loadingEl);
+                        if (interactions.length === 0 && !drugInteractionsText && !contraindications) {
+                            interactionList.innerHTML = "<div class='glass'>No interaction data found in FDA reports.</div>";
+                            return;
+                        }
+                        interactions.slice(0, 10).forEach((interaction) => {
+                            const row = document.createElement("div");
+                            row.className = "interaction-item";
+                            row.innerHTML = `
+                                <div>
+                                    <strong>${interaction.term}</strong>
+                                    <p>Reported in ${interaction.count} adverse event reports.</p>
+                                </div>
+                                <span class="severity severity-medium">${interaction.count} reports</span>
+                            `;
+                            interactionList.appendChild(row);
+                        });
+                    } catch (error) {
+                        if (interactionList.contains(loadingEl)) interactionList.removeChild(loadingEl);
+                        if (!drugInteractionsText && !contraindications) {
+                            interactionList.innerHTML = "<div class='glass'>Unable to load interaction data from FDA.</div>";
+                        }
+                    }
+                }
+                renderExternalInteractions();
+
+                // Tolerance - not available for external drugs
+                toleranceText.textContent = "Tolerance and dependence data not available for FDA-indexed drugs.";
+                dependenceNotes.textContent = "Consult a healthcare professional for more information.";
+                physicalBar.style.width = "0%";
+                psychBar.style.width = "0%";
+
+                // Overdose - show boxed warning, overdosage, and warnings
+                let overdoseHTML = "";
+                if (boxedWarning) {
+                    overdoseHTML += `<p style="color:var(--danger);font-weight:bold;border-left:3px solid var(--danger);padding-left:8px;margin:8px 0;"><strong>BOXED WARNING:</strong> ${boxedWarning.length > 600 ? boxedWarning.slice(0, 600) + "..." : boxedWarning}</p>`;
+                }
+                if (overdosageText) {
+                    overdoseHTML += `<p><strong>Overdosage:</strong> ${overdosageText.length > 500 ? overdosageText.slice(0, 500) + "..." : overdosageText}</p>`;
+                }
+                if (warnings && !boxedWarning) {
+                    overdoseHTML += `<p><strong>Warnings:</strong> ${warnings.length > 500 ? warnings.slice(0, 500) + "..." : warnings}</p>`;
+                }
+                if (!overdoseHTML) {
+                    overdoseHTML = `<p>See FDA label for overdose information.</p>`;
+                }
+                overdoseHTML += `<p>Please consult a healthcare professional or visit <a href="https://www.fda.gov/drugs" target="_blank">FDA Drugs</a> for more information.</p>`;
+                overdoseInfo.innerHTML = overdoseHTML;
+
+                // Fun facts - show useful info from FDA data
+                funFacts.innerHTML = "";
+                const facts = [];
+                if (productType) facts.push(`Product type: ${productType}`);
+                if (ndc.dosage_form) facts.push(`Dosage form: ${ndc.dosage_form}`);
+                if (ndc.labeler_name) facts.push(`Marketed by: ${ndc.labeler_name}`);
+                if (rxcui) facts.push(`RxNorm CUI: ${rxcui}`);
+                facts.push(`This drug is indexed by the U.S. FDA openFDA platform, which provides access to drug labeling, adverse events, and NDC directory data.`);
+                facts.forEach((factText) => {
+                    const factCard = document.createElement("div");
+                    factCard.className = "carousel-card";
+                    factCard.textContent = factText;
+                    funFacts.appendChild(factCard);
+                });
+
+                // Related drugs - link to search for similar drugs
+                relatedDrugs.innerHTML = "";
+                if (pharmClass.length > 0) {
+                    pharmClass.slice(0, 3).forEach((cls) => {
+                        const chip = document.createElement("button");
+                        chip.type = "button";
+                        chip.className = "link-chip";
+                        chip.textContent = cls.replace(/\s*\[.*?\]\s*/g, "").trim();
+                        chip.addEventListener("click", () => {
+                            window.location.href = `index.html#search`;
+                        });
+                        relatedDrugs.appendChild(chip);
+                    });
+                }
+                const searchChip = document.createElement("button");
+                searchChip.type = "button";
+                searchChip.className = "link-chip";
+                searchChip.textContent = "Search on FDA";
+                searchChip.addEventListener("click", () => {
+                    window.open(`https://www.fda.gov/drugs`, "_blank");
+                });
+                relatedDrugs.appendChild(searchChip);
+
+            } catch (error) {
+                console.error("[PharmaNerd] Error loading external drug:", error);
+                title.textContent = "Error loading drug";
+                subtitle.textContent = "Could not fetch data from openFDA.";
+                hero.innerHTML = `<p style="color:var(--danger);padding:16px;">Failed to load drug information for "${drugName}". The openFDA API may be unavailable.</p>`;
+            }
+        }
+
+        function renderDrug(drug) {
+            const { DRUGS, matchDrugByAlias } = window.PharmaNerdData;
+            const {
+                addRecent,
+                buildBadge,
+                toggleFavorite,
+                updateFavoriteButton,
+                getClassIcon,
+                getReceptorTooltip,
+                getPkTooltip,
+                severityClass,
+            } = window.PharmaNerdUI;
+            const { getInteractionsForDrug } = window.PharmaNerdRx || {};
+
+            const hero = document.querySelector("#drugHero");
+            const title = document.querySelector("#drugTitle");
+            const subtitle = document.querySelector("#drugSubtitle");
+            const mechanismText = document.querySelector("#mechanismText");
+            const receptorDiagram = document.querySelector("#receptorDiagram");
+            const timelineLabels = document.querySelector("#timelineLabels");
+            const pkGrid = document.querySelector("#pkGrid");
+            const effectsPositive = document.querySelector("#effectsPositive");
+            const effectsNeutral = document.querySelector("#effectsNeutral");
+            const effectsNegative = document.querySelector("#effectsNegative");
+            const interactionList = document.querySelector("#interactionList");
+            const favoriteBtn = document.querySelector("#favoriteBtn");
+            const toleranceText = document.querySelector("#toleranceText");
+            const physicalBar = document.querySelector("#physicalBar");
+            const psychBar = document.querySelector("#psychBar");
+            const dependenceNotes = document.querySelector("#dependenceNotes");
+            const overdoseInfo = document.querySelector("#overdoseInfo");
+            const funFacts = document.querySelector("#funFacts");
+            const relatedDrugs = document.querySelector("#relatedDrugs");
+
+            // clear hero before rendering
+            hero.innerHTML = '';
+            document.title = `PharmaNerd | ${drug.name}`;
+            title.textContent = drug.name;
+            subtitle.textContent = drug.subclass;
+            addRecent(drug.name);
+            if (favoriteBtn) {
+                favoriteBtn.style.display = "";
+                updateFavoriteButton(favoriteBtn, drug.name);
+                favoriteBtn.addEventListener("click", () => {
+                    toggleFavorite(drug.name);
+                    updateFavoriteButton(favoriteBtn, drug.name);
+                });
+            }
+
+            const badge = buildBadge(drug.class, drug.class);
+            const heroCard = document.createElement("div");
+            heroCard.className = "hero-title";
+            heroCard.innerHTML = `
+                <h2>${drug.name}</h2>
+                <p class="mono">${drug.aliases.join(" | ")}</p>
+            `;
+            heroCard.appendChild(badge);
+
+            const metaCard = document.createElement("div");
+            metaCard.innerHTML = `
+                <div class="flag-row">
+                    <span title="United States">🇺🇸</span>
+                    <span>${drug.legalStatus.US}</span>
+                </div>
+                <div class="flag-row">
+                    <span title="United Kingdom">🇬🇧</span>
+                    <span>${drug.legalStatus.UK}</span>
+                </div>
+                <div class="flag-row">
+                    <span title="European Union">🇪🇺</span>
+                    <span>${drug.legalStatus.EU}</span>
+                </div>
+                <div class="flag-row">
+                    <img src="assets/icons/${getClassIcon(drug.class)}" alt="" />
+                    <span>${drug.class}</span>
+                </div>
+            `;
+
+            hero.appendChild(heroCard);
+            hero.appendChild(metaCard);
+
+            renderSnapshot([
+                { label: "Class", value: drug.class, accent: "#57d7ff" },
+                { label: "Type", value: drug.type, accent: "#7af8bf" },
+                { label: "Legal", value: drug.legalStatusCategory, accent: "#57d7ff" },
+                { label: "Potency", value: `${drug.potency}/5`, accent: "#7af8bf" },
+                { label: "Dependence", value: `${drug.dependenceRisk}%`, accent: drug.dependenceRisk >= 75 ? "#ff6f7c" : "#57d7ff" },
+                { label: "Duration", value: `${drug.durationHours} h`, accent: "#57d7ff" },
+                { label: "Half-life", value: drug.halfLifeHours ? `${drug.halfLifeHours} h` : drug.pharmacokinetics.halfLife, accent: "#7af8bf" },
+                { label: "Routes", value: drug.pharmacokinetics.routesOfAdmin.join(", "), accent: "#57d7ff" },
+                { label: "Receptors", value: `${drug.receptors.length}`, accent: "#7af8bf", tooltip: drug.receptors.join(", ") },
+                { label: "Interactions", value: `${drug.interactions.length}`, accent: "#ff6f7c" },
+            ]);
+
+            mechanismText.textContent = drug.mechanism;
+
+            receptorDiagram.innerHTML = "";
+            drug.receptors.forEach((receptor) => {
+                const pill = document.createElement("div");
+                pill.className = "receptor-pill";
+                pill.textContent = receptor;
+                pill.setAttribute("data-tooltip", getReceptorTooltip(receptor));
+                receptorDiagram.appendChild(pill);
+            });
+
+            timelineLabels.innerHTML = `
+                <span>Onset: ${drug.effects.onset}</span>
+                <span>Peak: ${drug.effects.peak}</span>
+                <span>Duration: ${drug.effects.duration}</span>
+            `;
+
+            pkGrid.innerHTML = "";
+            const pkItems = [
+                { label: "Half-life", value: drug.pharmacokinetics.halfLife, key: "half-life" },
+                { label: "Bioavailability", value: drug.pharmacokinetics.bioavailability, key: "bioavailability" },
+                { label: "Routes", value: drug.pharmacokinetics.routesOfAdmin.join(", "), key: "routes" },
+                { label: "Metabolism", value: drug.pharmacokinetics.metabolism, key: "metabolism" },
+            ];
+            pkItems.forEach((item) => {
+                const card = document.createElement("div");
+                card.className = "pk-card";
+                card.innerHTML = `
+                    <h4 data-tooltip="${getPkTooltip(item.key)}">${item.label}</h4>
+                    <p>${item.value}</p>
+                `;
+                pkGrid.appendChild(card);
+            });
+
+            const fillTags = (container, list) => {
+                container.innerHTML = "";
+                list.forEach((item) => {
+                    const tag = document.createElement("span");
+                    tag.className = "tag";
+                    tag.textContent = item;
+                    container.appendChild(tag);
+                });
+            };
+
+            fillTags(effectsPositive, drug.effects.positive);
+            fillTags(effectsNeutral, drug.effects.neutral);
+            fillTags(effectsNegative, drug.effects.negative);
+
+            async function renderInteractions() {
+                if (!interactionList) return;
+                if (!getInteractionsForDrug) {
+                    interactionList.innerHTML = "<div class=\"glass\">RxNorm interactions unavailable.</div>";
+                    return;
+                }
+
+                interactionList.innerHTML = "";
+                // show skeletons
+                if (window.PharmaNerdUI && window.PharmaNerdUI.createSkeletonCard) {
+                    for (let i = 0; i < 4; i++) {
+                        const s = window.PharmaNerdUI.createSkeletonCard();
+                        s.style.margin = '8px 0';
+                        interactionList.appendChild(s);
+                    }
+                } else {
+                    interactionList.innerHTML = "<div class=\"glass\">Loading RxNorm interactions...</div>";
+                }
+
+                try {
+                    const result = await getInteractionsForDrug(drug);
+                    interactionList.innerHTML = "";
+                    if (!result.list || !result.list.length) {
+                        interactionList.innerHTML = "<div class=\"glass\">No RxNorm interactions found for this drug.</div>";
+                        return;
+                    }
+
+                    result.list.slice(0, 10).forEach((interaction) => {
+                        const matched = matchDrugByAlias(interaction.otherName);
+                        if (matched && window.PharmaNerdUI && window.PharmaNerdUI.createDrugCard) {
+                            const card = window.PharmaNerdUI.createDrugCard(matched);
+                            // append interaction description and severity
+                            const info = document.createElement('div');
+                            info.style.marginTop = '8px';
+                            info.innerHTML = `<p style="margin:0;font-size:13px;color:var(--muted);">${interaction.description || 'Interaction documented in RxNorm.'}</p>`;
+                            const sev = document.createElement('span');
+                            sev.className = `severity ${severityClass(interaction.severity)}`;
+                            sev.style.marginLeft = '8px';
+                            sev.textContent = interaction.severity;
+                            const footer = document.createElement('div');
+                            footer.style.display = 'flex';
+                            footer.style.alignItems = 'center';
+                            footer.appendChild(info);
+                            footer.appendChild(sev);
+                            card.appendChild(footer);
+                            interactionList.appendChild(card);
+                        } else {
+                            const row = document.createElement('div');
+                            row.className = 'interaction-item';
+                            row.innerHTML = `
+                                <div>
+                                    <strong ${matched ? `class="drug-link" data-drug-link="${matched.name}"` : ''}>${matched ? matched.name : interaction.otherName}</strong>
+                                    <p>${interaction.description || 'Interaction documented in RxNorm.'}</p>
+                                </div>
+                                <span class="severity ${severityClass(interaction.severity)}">${interaction.severity}</span>
+                            `;
+                            interactionList.appendChild(row);
+                        }
+                    });
+                } catch (error) {
+                    interactionList.innerHTML = "<div class=\"glass\">Unable to load RxNorm interactions.</div>";
+                }
+            }
+
+            toleranceText.textContent = drug.tolerance;
+            dependenceNotes.textContent = drug.dependence.notes;
+            const physicalRisk = drug.dependence.physical ? drug.dependenceRisk : 20;
+            const psychRisk = drug.dependence.psychological ? drug.dependenceRisk : 25;
+            physicalBar.style.width = `${physicalRisk}%`;
+            psychBar.style.width = `${psychRisk}%`;
+
+            overdoseInfo.innerHTML = `
+                <p><strong>Symptoms:</strong> ${drug.overdoseInfo.symptoms.join(", ")}</p>
+                <p><strong>Treatment:</strong> ${drug.overdoseInfo.treatment}</p>
+                <p><strong>Lethal dose:</strong> ${drug.overdoseInfo.lethalDose}</p>
+            `;
+
+            funFacts.innerHTML = "";
+            drug.funFacts.forEach((fact) => {
+                const card = document.createElement("div");
+                card.className = "carousel-card";
+                card.textContent = fact;
+                funFacts.appendChild(card);
+            });
+
+            relatedDrugs.innerHTML = "";
+            drug.relatedDrugs.forEach((related) => {
+                const chip = document.createElement("button");
+                chip.type = "button";
+                chip.className = "link-chip drug-link";
+                chip.textContent = related;
+                chip.dataset.drugLink = related;
+                relatedDrugs.appendChild(chip);
+            });
+
+            renderInteractions();
+        }
+
+        if (window.PharmaNerdData && window.PharmaNerdData.DRUGS && window.PharmaNerdData.DRUGS.length) {
+            initDrugPage();
+        } else {
+            window.addEventListener("pharmanerd:data-loaded", initDrugPage);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="scripts/settings.js" defer></script>
+</head>
+
+<body>
+    <h1>Settings</h1>
+    <div id="settingsForm" style="max-width:500px;margin:20px auto;padding:20px;">
+        <label for="themeSelect" style="display:block;margin-bottom:10px;font-weight:bold;">Choose UI Layout:</label>
+        <select id="themeSelect"
+            style="width:100%;padding:10px;border-radius:8px;background:rgba(7,16,28,0.9);color:var(--text);border:1px solid rgba(174,234,255,0.2);margin-bottom:14px;">
+            <option value="sidebar">Sidebar Nav (default)</option>
+            <option value="topbar">Top Bar Nav (compact)</option>
+            <option value="minimal">Minimal Clean</option>
+        </select>
+        <button id="applyBtn" class="btn" style="width:100%;">Apply Layout</button>
+        <p id="status" style="margin-top:12px;color:var(--muted);font-size:13px;"></p>
+    </div>
+    <script>
+        const select = document.getElementById('themeSelect');
+        const btn = document.getElementById('applyBtn');
+        const status = document.getElementById('status');
+        btn.addEventListener('click', () => {
+            const theme = select.value;
+            if (window.PharmaNerdSettings) {
+                window.PharmaNerdSettings.setSetting('theme', theme);
+                status.textContent = 'Layout applied! Refresh the page to see the full effect.';
+                status.style.color = '#6fffb0';
+            }
+        });
+        const check = setInterval(() => {
+            if (window.PharmaNerdSettings) {
+                clearInterval(check);
+                const current = window.PharmaNerdSettings.getSetting('theme') || 'sidebar';
+                select.value = current;
+                status.textContent = 'Current layout: ' + select.options[select.selectedIndex].text;
+            }
+        }, 50);
+    </script>
+</body>
+
+</html>

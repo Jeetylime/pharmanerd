@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PharmaNerd | Search</title>
+    <link rel="stylesheet" href="styles/main.css" />
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">PN</div>
+                <div>
+                    <h1>PharmaNerd</h1>
+                    <p>Pharmacology Encyclopedia</p>
+                </div>
+            </div>
+            <nav class="nav">
+                <div class="nav-left">
+                    <a class="nav-link" href="index.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 10L12 4l8 6v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
+                        </svg>
+                        Browse
+                    </a>
+                    <a class="nav-link" href="compare.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h6v16H4zM14 8h6v12h-6z" />
+                        </svg>
+                        Compare
+                    </a>
+                    <a class="nav-link" href="interactions.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 7h10v10H7z" />
+                            <path d="M3 12h4M17 12h4M12 3v4M12 17v4" />
+                        </svg>
+                        Interactions
+                    </a>
+
+                    <a class="nav-link" href="receptors.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 3c4 0 7 3 7 7 0 3-2 5-4 6v3H9v-3c-2-1-4-3-4-6 0-4 3-7 7-7z" />
+                            <path d="M9 21h6" />
+                        </svg>
+                        Receptors
+                    </a>
+                </div>
+                <div class="nav-right" style="display:flex;align-items:center;gap:12px;">
+                    <input id="topSearchInput" class="top-search" type="search" placeholder="Search by name or alias..."
+                        aria-label="Search drugs" />
+                </div>
+            </nav>
+        </aside>
+        <main class="main">
+            <header class="page-header">
+                <div class="page-title">
+                    <h2>Search</h2>
+                    <p>Find drugs by name or alias.</p>
+                </div>
+            </header>
+
+            <section class="glass section">
+                <input id="globalSearchInput" type="search" class="search-page-input"
+                    placeholder="Search by name or alias..." autofocus />
+                <div class="section-head" style="margin-top: 20px;">
+                    <h3>Results</h3>
+                    <span id="searchResultCount" class="chip">0</span>
+                </div>
+                <div class="card-grid" id="searchResultsGrid"></div>
+                <p class="empty-state" id="searchEmpty">Type a name to search.</p>
+            </section>
+        </main>
+    </div>
+
+    <script src="scripts/data.js"></script>
+    <script src="scripts/components.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/search.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/topNavSearch.js"></script>
+    <script>
+        (function () {
+            const input = document.getElementById('globalSearchInput');
+            const grid = document.getElementById('searchResultsGrid');
+            const empty = document.getElementById('searchEmpty');
+            const count = document.getElementById('searchResultCount');
+
+            let externalSearchTimeout = null;
+            let isSearchingExternal = false;
+
+            var createExternalCard = null;
+            if (window.PharmaNerdComponents && window.PharmaNerdComponents.createExternalDrugCardFactory) {
+                createExternalCard = window.PharmaNerdComponents.createExternalDrugCardFactory({
+                    onSelect: function (drug) {
+                        window.location.href = 'drug.html?drug=' + encodeURIComponent(drug.name) + '&external=true';
+                    }
+                });
+            }
+
+            function renderResults(local, external) {
+                grid.innerHTML = '';
+
+                if (local.length > 0) {
+                    const { createDrugCard, wireDrugLinks } = window.PharmaNerdUI || {};
+                    local.forEach(function (d) {
+                        if (createDrugCard) {
+                            grid.appendChild(createDrugCard(d));
+                        } else {
+                            var card = document.createElement('a');
+                            card.className = 'card';
+                            card.href = 'drug.html?drug=' + encodeURIComponent(d.name);
+                            card.innerHTML = '<h4>' + d.name + '</h4><p>' + (d.aliases ? d.aliases.join(', ') : '') + '</p>';
+                            grid.appendChild(card);
+                        }
+                    });
+                    if (wireDrugLinks) wireDrugLinks();
+                }
+
+                if (external.length > 0) {
+                    var sep = document.createElement('div');
+                    sep.style.cssText = 'grid-column:1/-1;padding:8px 0;font-size:12px;color:var(--muted);border-top:1px solid var(--border);margin-top:8px;display:flex;align-items:center;gap:6px;';
+                    sep.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;"></span> FDA external results:';
+                    grid.appendChild(sep);
+                    external.slice(0, 8).forEach(function (d) {
+                        if (createExternalCard) {
+                            grid.appendChild(createExternalCard(d));
+                        } else {
+                            var card = document.createElement('div');
+                            card.className = 'drug-card external-drug';
+                            card.textContent = d.name + ' (FDA)';
+                            card.addEventListener('click', function () {
+                                window.location.href = 'drug.html?drug=' + encodeURIComponent(d.name) + '&external=true';
+                            });
+                            grid.appendChild(card);
+                        }
+                    });
+                }
+            }
+
+            function showEmpty(msg, showLoading) {
+                grid.innerHTML = '';
+                if (showLoading) {
+                    empty.style.display = 'none';
+                    count.textContent = 'Searching openFDA...';
+                } else {
+                    empty.textContent = msg;
+                    empty.style.display = '';
+                    count.textContent = '0';
+                }
+            }
+
+            function initSearch() {
+                async function doSearch(query) {
+                    const trimmed = query.trim().toLowerCase();
+                    grid.innerHTML = '';
+                    if (!trimmed) {
+                        empty.textContent = 'Type a name to search.';
+                        empty.style.display = '';
+                        count.textContent = '0';
+                        return;
+                    }
+
+                    const { DRUGS } = window.PharmaNerdData;
+
+                    // 1. Search local database first
+                    const localResults = DRUGS.filter(function (d) {
+                        return d.name.toLowerCase().includes(trimmed) ||
+                            (d.aliases && d.aliases.some(function (a) { return a.toLowerCase().includes(trimmed); }));
+                    });
+
+                    if (localResults.length > 0) {
+                        empty.style.display = 'none';
+                        count.textContent = String(localResults.length) + ' results';
+                        renderResults(localResults, []);
+                        return;
+                    }
+
+                    // 2. No local results — search external API
+                    if (trimmed.length < 2) {
+                        showEmpty('Type at least 2 characters to search external sources.', false);
+                        return;
+                    }
+
+                    isSearchingExternal = true;
+                    showEmpty('', true);
+
+                    try {
+                        const resp = await fetch('/api/drug-search?name=' + encodeURIComponent(query.trim()));
+                        if (!resp.ok) throw new Error('API returned ' + resp.status);
+                        const data = await resp.json();
+                        const externalResults = data.results || [];
+                        isSearchingExternal = false;
+
+                        if (externalResults.length === 0) {
+                            showEmpty('No drugs found matching "' + query.trim() + '" in local database or FDA.', false);
+                            return;
+                        }
+
+                        empty.style.display = 'none';
+                        count.textContent = String(externalResults.length) + ' external results';
+                        renderResults([], externalResults);
+                    } catch (err) {
+                        isSearchingExternal = false;
+                        showEmpty('No local results and unable to search external sources.', false);
+                    }
+                }
+
+                input.addEventListener('input', function () {
+                    if (externalSearchTimeout) clearTimeout(externalSearchTimeout);
+                    externalSearchTimeout = setTimeout(function () {
+                        doSearch(this.value);
+                    }.bind(this), 300);
+                });
+            }
+
+            if (window.PharmaNerdData && window.PharmaNerdData.DRUGS && window.PharmaNerdData.DRUGS.length) {
+                initSearch();
+            } else {
+                window.addEventListener('pharmanerd:data-loaded', initSearch);
+            }
+        })();
+    </script>
+</body>
+
+</html>
