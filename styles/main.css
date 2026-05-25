@@ -294,6 +294,16 @@ img {
     transform: translateY(-1px);
 }
 
+.mobile-nav-backdrop,
+.mobile-nav-toggle,
+.mobile-nav-close {
+    display: none;
+}
+
+body.mobile-nav-open {
+    overflow: hidden;
+}
+
 .main {
     flex: 1;
     width: min(1440px, 100%);
@@ -1535,6 +1545,181 @@ html.popup-mode .glass {
 }
 
 @media (max-width: 860px) {
+    .app-shell {
+        min-height: 100svh;
+    }
+
+    .sidebar {
+        position: fixed;
+        inset: 12px 12px auto 12px;
+        width: auto;
+        max-height: calc(100svh - 24px);
+        overflow: auto;
+        padding: 18px 16px 20px;
+        border-radius: 28px;
+        border: 1px solid rgba(174, 234, 255, 0.16);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.48);
+        background:
+            linear-gradient(180deg, rgba(5, 12, 22, 0.98), rgba(7, 16, 28, 0.94)),
+            radial-gradient(circle at top right, rgba(87, 215, 255, 0.16), transparent 35%);
+        backdrop-filter: blur(24px);
+        transform: translateY(-14px) scale(0.98);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.2, 1), opacity 0.18s ease;
+        z-index: 70;
+    }
+
+    body.mobile-nav-open .sidebar {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .mobile-nav-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        border: 0;
+        background: rgba(2, 6, 14, 0.72);
+        backdrop-filter: blur(14px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease;
+        z-index: 60;
+    }
+
+    .mobile-nav-backdrop.is-open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .mobile-nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        position: fixed;
+        left: 16px;
+        bottom: 16px;
+        z-index: 80;
+        border: 1px solid rgba(87, 215, 255, 0.35);
+        background: linear-gradient(135deg, rgba(87, 215, 255, 0.92), rgba(122, 248, 191, 0.88));
+        color: #062033;
+        padding: 12px 16px;
+        border-radius: 999px;
+        font-family: inherit;
+        font-weight: 700;
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.32);
+        cursor: pointer;
+    }
+
+    .mobile-nav-toggle svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .mobile-nav-toggle.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(8px);
+    }
+
+    .mobile-nav-close {
+        display: grid;
+        place-items: center;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        border: 1px solid rgba(174, 234, 255, 0.18);
+        background: rgba(8, 16, 28, 0.88);
+        color: var(--text);
+        cursor: pointer;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+    }
+
+    .mobile-nav-close svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .sidebar .brand {
+        padding-right: 56px;
+        align-items: flex-start;
+    }
+
+    .nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+
+    .nav-left,
+    .nav-right {
+        width: 100%;
+        flex: none;
+        margin-left: 0;
+    }
+
+    .nav-left {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .nav-right {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(174, 234, 255, 0.1);
+    }
+
+    .nav-right>* {
+        width: 100%;
+    }
+
+    .nav-link,
+    .btn,
+    .chip,
+    #topSearchInput {
+        width: 100%;
+    }
+
+    #topSearchInput {
+        min-height: 46px;
+    }
+
+    .nav-link {
+        justify-content: flex-start;
+        padding: 12px 14px;
+        border-radius: 16px;
+    }
+
+    .nav-right .nav-link {
+        min-height: 46px;
+    }
+
+    .layout-sidebar .app-shell {
+        flex-direction: column;
+    }
+
+    .layout-sidebar .sidebar {
+        width: auto;
+        height: auto;
+    }
+
+    .layout-sidebar .main,
+    .layout-topbar .main,
+    .layout-minimal .main {
+        margin-left: 0;
+        width: min(1440px, 100%);
+        padding: 22px 18px 92px;
+    }
+
     .page-header {
         flex-direction: column;
         align-items: flex-start;
@@ -1582,6 +1767,10 @@ html.popup-mode .glass {
 
     .timeline-labels {
         flex-wrap: wrap;
+    }
+
+    #navSearchDebug {
+        display: none !important;
     }
 }
 

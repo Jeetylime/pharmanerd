@@ -181,6 +181,91 @@ if (!window.PharmaNerdUI) {
         });
     }
 
+    function initMobileNav() {
+        const sidebar = document.querySelector(".sidebar");
+        if (!sidebar) return;
+
+        const mobileQuery = window.matchMedia("(max-width: 860px)");
+        let dismissedOnMobile = false;
+
+        const backdrop = document.createElement("button");
+        backdrop.type = "button";
+        backdrop.className = "mobile-nav-backdrop";
+        backdrop.setAttribute("aria-label", "Close navigation");
+
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "mobile-nav-toggle";
+        toggle.setAttribute("aria-label", "Open navigation");
+        toggle.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <span>Menu</span>
+        `;
+
+        const closeButton = document.createElement("button");
+        closeButton.type = "button";
+        closeButton.className = "mobile-nav-close";
+        closeButton.setAttribute("aria-label", "Close navigation");
+        closeButton.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+        `;
+
+        if (!document.querySelector(".mobile-nav-backdrop")) {
+            document.body.appendChild(backdrop);
+        }
+
+        if (!document.querySelector(".mobile-nav-toggle")) {
+            document.body.appendChild(toggle);
+        }
+
+        if (!sidebar.querySelector(".mobile-nav-close")) {
+            sidebar.insertBefore(closeButton, sidebar.firstChild);
+        }
+
+        function isMobile() {
+            return mobileQuery.matches;
+        }
+
+        function setOpen(open, fromDismiss) {
+            document.body.classList.toggle("mobile-nav-open", open);
+            backdrop.classList.toggle("is-open", open);
+            toggle.classList.toggle("is-hidden", open);
+            if (open) {
+                dismissedOnMobile = false;
+            } else if (fromDismiss) {
+                dismissedOnMobile = true;
+            }
+        }
+
+        function syncMobileNav() {
+            if (!isMobile()) {
+                dismissedOnMobile = false;
+                setOpen(false, false);
+                return;
+            }
+
+            if (!dismissedOnMobile) {
+                setOpen(true, false);
+            }
+        }
+
+        backdrop.addEventListener("click", () => setOpen(false, true));
+        closeButton.addEventListener("click", () => setOpen(false, true));
+        toggle.addEventListener("click", () => setOpen(true, false));
+
+        if (typeof mobileQuery.addEventListener === "function") {
+            mobileQuery.addEventListener("change", syncMobileNav);
+        } else if (typeof mobileQuery.addListener === "function") {
+            mobileQuery.addListener(syncMobileNav);
+        }
+
+        syncMobileNav();
+    }
+
     window.PharmaNerdUI = {
         RECENT_KEY,
         FAVORITES_KEY,
@@ -206,4 +291,6 @@ if (!window.PharmaNerdUI) {
         riskColor,
         wireDrugLinks,
     };
+
+    initMobileNav();
 }
