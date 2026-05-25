@@ -1560,9 +1560,10 @@ html.popup-mode .glass {
         border: 1px solid rgba(174, 234, 255, 0.16);
         box-shadow: 0 24px 60px rgba(0, 0, 0, 0.48);
         background:
-            linear-gradient(180deg, rgba(5, 12, 22, 0.98), rgba(7, 16, 28, 0.94)),
-            radial-gradient(circle at top right, rgba(87, 215, 255, 0.16), transparent 35%);
-        backdrop-filter: blur(24px);
+            linear-gradient(180deg, rgba(5, 12, 22, 0.99), rgba(7, 16, 28, 0.97)),
+            radial-gradient(circle at top right, rgba(87, 215, 255, 0.12), transparent 35%);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
         transform: translateY(-14px) scale(0.98);
         opacity: 0;
         pointer-events: none;
@@ -1581,8 +1582,9 @@ html.popup-mode .glass {
         position: fixed;
         inset: 0;
         border: 0;
-        background: rgba(2, 6, 14, 0.72);
-        backdrop-filter: blur(14px);
+        background: rgba(2, 6, 14, 0.88);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.18s ease;
@@ -1655,6 +1657,7 @@ html.popup-mode .glass {
         flex-direction: column;
         align-items: stretch;
         gap: 14px;
+        overflow: visible;
     }
 
     .nav-left,
