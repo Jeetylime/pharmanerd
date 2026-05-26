@@ -21,19 +21,17 @@ PharmaNerd provides a clean, searchable interface to learn about drug mechanisms
 
 ## Drug Classes Covered
 
-| Class            | Icon                     |
-|------------------|--------------------------|
-| Opioid           | `opioid.svg`             |
-| Benzodiazepine   | `benzo.svg`              |
-| Stimulant        | `stimulant.svg`          |
-| Psychedelic      | `psychedelic.svg`        |
-| Dissociative     | `dissociative.svg`       |
-| Empathogen       | `empathogen.svg`         |
-| Cannabinoid      | `cannabinoid.svg`        |
-| Depressant       | `depressant.svg`         |
-| Antidepressant   | `antidepressant.svg`     |
-| Antipsychotic    | `antipsychotic.svg`      |
-| Nootropic        | `nootropic.svg`          |
+- Opioid
+- Benzodiazepine
+- Stimulant
+- Psychedelic
+- Dissociative
+- Empathogen
+- Cannabinoid
+- Depressant
+- Antidepressant
+- Antipsychotic
+- Nootropic
 
 ## Tech Stack
 
@@ -43,7 +41,6 @@ PharmaNerd provides a clean, searchable interface to learn about drug mechanisms
 | Backend   | Node.js (built-in `http`/`https` modules) |
 | Database  | SQLite3                        |
 | Icons     | Custom SVG icons per drug class|
-
 
 ## Live Site
 
@@ -77,7 +74,6 @@ npm start
 # Or specify a custom port
 PORT=8080 node server.js
 ```
-```
 
 ## Database
 
@@ -98,11 +94,11 @@ This project currently has no license. All rights reserved by [Jeetylime](https:
 
 ---
 
-## Disclamer 
+## Disclaimer
 
- PharmaNerd is an educational reference tool only. It is not a substitute for professional medical or pharmaceutical advice.
+PharmaNerd is an educational reference tool only. It is not a substitute for professional medical or pharmaceutical advice.
 
- Readme & code generated in part by
-    deepseak-v4-flash
-    claude sonnet 4.6
-    chatgpt codex 5.2 
+Readme & code generated in part by:
+- DeepSeak-v4-Flash
+- Claude Sonnet 4.6
+- ChatGPT Codex 5.2
