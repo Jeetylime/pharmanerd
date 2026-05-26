@@ -10,88 +10,7 @@
 
 <body>
     <div class="app-shell">
-        <aside class="sidebar">
-            <div class="brand">
-                <div class="brand-mark">PN</div>
-                <div>
-                    <h1>PharmaNerd</h1>
-                    <p>Pharmacology Encyclopedia</p>
-                </div>
-            </div>
-            <nav class="nav">
-                <div class="nav-left">
-                    <a class="nav-link active" href="index.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 10L12 4l8 6v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
-                        </svg>
-                        Browse
-                    </a>
-                    <a class="nav-link" href="compare.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h6v16H4zM14 8h6v12h-6z" />
-                        </svg>
-                        Compare
-                    </a>
-                    <a class="nav-link" href="interactions.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 7h10v10H7z" />
-                            <path d="M3 12h4M17 12h4M12 3v4M12 17v4" />
-                        </svg>
-                        Interactions
-                    </a>
-
-                    <a class="nav-link" href="receptors.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 3c4 0 7 3 7 7 0 3-2 5-4 6v3H9v-3c-2-1-4-3-4-6 0-4 3-7 7-7z" />
-                            <path d="M9 21h6" />
-                        </svg>
-                        Receptors
-                    </a>
-                    <a class="nav-link" href="classes.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path
-                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                        </svg>
-                        Classes
-                    </a>
-                    <a class="nav-link" href="history.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 6v6l4 2" />
-                        </svg>
-                        History
-                    </a>
-                </div>
-                <div class="nav-right" style="display:flex;align-items:center;gap:12px;">
-                    <input id="topSearchInput" class="top-search" type="search" placeholder="Search by name or alias..."
-                        aria-label="Search drugs" />
-                    <select id="sortSelect" class="chip" aria-label="Sort">
-                        <option value="name">Name A-Z</option>
-                        <option value="potency">Potency</option>
-                        <option value="duration">Duration</option>
-                        <option value="halfLife">Half-life</option>
-                    </select>
-                    <button class="nav-link" title="Help / Tour" aria-label="Help"
-                        onclick="window.PharmaNerdTutorial&&window.PharmaNerdTutorial.start();return false;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
-                            height="16">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                            <path d="M12 17h.01" />
-                        </svg>
-                    </button>
-                    <button class="nav-link nav-settings-toggle" title="Open settings" aria-label="Settings"
-                        onclick="(function(){var s=window.PharmaNerdSettings;if(s&&s.openModal){s.openModal()}else{alert('Settings loading...')};return false;})();return false;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16"
-                            height="16">
-                            <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
-                            <path
-                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                        </svg>
-                    </button>
-                </div>
-            </nav>
-        </aside>
+        <aside class="sidebar"></aside>
         <main class="main">
             <header class="page-header">
                 <div class="page-title">
@@ -103,14 +22,21 @@
                 </div>
             </header>
 
-            <!-- Filters panel removed: replaced by compact header-only controls in the top nav -->
-
-            <section class="section">
-                <div class="section-head">
-                    <h3>My Stash</h3>
+            <section class="glass section" id="filterChips" style="margin-bottom:16px;">
+                <div class="filter-chips">
+                    <div class="filter-group">
+                        <span class="filter-label">Class</span>
+                        <div class="chips" id="classFilterChips"></div>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Type</span>
+                        <div class="chips" id="typeFilterChips"></div>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Effect</span>
+                        <div class="chips" id="effectFilterChips"></div>
+                    </div>
                 </div>
-                <p class="empty-state" id="stashEmpty">No favorites yet. Tap “Stash” on a drug card.</p>
-                <div class="card-grid" id="stashGrid"></div>
             </section>
 
             <section class="section">
@@ -130,6 +56,7 @@
         </main>
     </div>
 
+    <script src="scripts/nav.js"></script>
     <script src="scripts/data.js"></script>
     <script src="scripts/components.js"></script>
     <script src="scripts/settings.js"></script>

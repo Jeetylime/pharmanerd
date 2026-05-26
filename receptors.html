@@ -10,73 +10,16 @@
 
 <body>
     <div class="app-shell">
-        <aside class="sidebar">
-            <div class="brand">
-                <div class="brand-mark">PN</div>
-                <div>
-                    <h1>PharmaNerd</h1>
-                    <p>Pharmacology Encyclopedia</p>
-                </div>
-            </div>
-            <nav class="nav">
-                <div class="nav-left">
-                    <a class="nav-link" href="index.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 10L12 4l8 6v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
-                        </svg>
-                        Browse
-                    </a>
-                    <a class="nav-link" href="compare.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h6v16H4zM14 8h6v12h-6z" />
-                        </svg>
-                        Compare
-                    </a>
-                    <a class="nav-link" href="interactions.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 7h10v10H7z" />
-                            <path d="M3 12h4M17 12h4M12 3v4M12 17v4" />
-                        </svg>
-                        Interactions
-                    </a>
-
-                    <a class="nav-link active" href="receptors.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 3c4 0 7 3 7 7 0 3-2 5-4 6v3H9v-3c-2-1-4-3-4-6 0-4 3-7 7-7z" />
-                            <path d="M9 21h6" />
-                        </svg>
-                        Receptors
-                    </a>
-                    <a class="nav-link" href="classes.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path
-                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                        </svg>
-                        Classes
-                    </a>
-                    <a class="nav-link" href="history.html">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 6v6l4 2" />
-                        </svg>
-                        History
-                    </a>
-                </div>
-                <div class="nav-right" style="display:flex;align-items:center;gap:12px;">
-                    <input id="topSearchInput" class="top-search" type="search" placeholder="Search by name or alias..."
-                        aria-label="Search drugs" />
-                </div>
-            </nav>
-        </aside>
+        <aside class="sidebar"></aside>
         <main class="main">
             <header class="page-header">
                 <div class="page-title">
                     <h2>Receptor map</h2>
-                    <p>Explore which receptors appear across the catalog.</p>
+                    <p>Affinity data and linked drugs.</p>
                 </div>
             </header>
 
-            <section class="glass receptor-map">
+            <section class="section glass receptor-view">
                 <div class="glass">
                     <svg id="brainMap" viewBox="0 0 360 320" width="100%" height="100%" aria-label="Receptor map">
                         <path
@@ -98,6 +41,7 @@
         </main>
     </div>
 
+    <script src="scripts/nav.js"></script>
     <script src="scripts/data.js"></script>
     <script src="scripts/components.js"></script>
     <script src="scripts/settings.js"></script>

@@ -41,19 +41,100 @@ if (!window.PharmaNerdFiltersInit) {
         const API_BASE = "/api";
         const externalCache = new Map();
 
-        // filters removed: no chip groups on the page
-
         const state = {
             query: "",
-            // only query and sort are kept
             sort: "name",
+            classFilter: "",
+            typeFilter: "",
+            effectFilter: "",
         };
 
         function uniqueSorted(values) {
             return [...new Set(values)].sort((a, b) => a.localeCompare(b));
         }
 
-        // filter chips removed — UI no longer provides per-class/type/other filters
+        function renderFilterChips() {
+            const classContainer = document.getElementById('classFilterChips');
+            const typeContainer = document.getElementById('typeFilterChips');
+            const effectContainer = document.getElementById('effectFilterChips');
+            if (!classContainer) return;
+
+            // Build unique class list
+            const classes = uniqueSorted(DRUGS.map(d => d.class));
+            classContainer.innerHTML = '';
+            const allClassChip = document.createElement('span');
+            allClassChip.className = 'chip' + (state.classFilter === '' ? ' active' : '');
+            allClassChip.textContent = 'All';
+            allClassChip.addEventListener('click', () => { state.classFilter = ''; syncFilterChips(); render(); });
+            classContainer.appendChild(allClassChip);
+            classes.forEach(cls => {
+                const chip = document.createElement('span');
+                chip.className = 'chip' + (state.classFilter === cls ? ' active' : '');
+                chip.textContent = cls;
+                chip.addEventListener('click', () => { state.classFilter = cls; syncFilterChips(); render(); });
+                classContainer.appendChild(chip);
+            });
+
+            // Type filter
+            const types = uniqueSorted(DRUGS.map(d => d.type).filter(Boolean));
+            typeContainer.innerHTML = '';
+            const allTypeChip = document.createElement('span');
+            allTypeChip.className = 'chip' + (state.typeFilter === '' ? ' active' : '');
+            allTypeChip.textContent = 'All';
+            allTypeChip.addEventListener('click', () => { state.typeFilter = ''; syncFilterChips(); render(); });
+            typeContainer.appendChild(allTypeChip);
+            types.forEach(type => {
+                const chip = document.createElement('span');
+                chip.className = 'chip' + (state.typeFilter === type ? ' active' : '');
+                chip.textContent = type;
+                chip.addEventListener('click', () => { state.typeFilter = type; syncFilterChips(); render(); });
+                typeContainer.appendChild(chip);
+            });
+
+            // Effect filter
+            const effects = uniqueSorted(DRUGS.flatMap(d => d.effectProfile || []));
+            effectContainer.innerHTML = '';
+            const allEffectChip = document.createElement('span');
+            allEffectChip.className = 'chip' + (state.effectFilter === '' ? ' active' : '');
+            allEffectChip.textContent = 'All';
+            allEffectChip.addEventListener('click', () => { state.effectFilter = ''; syncFilterChips(); render(); });
+            effectContainer.appendChild(allEffectChip);
+            effects.forEach(effect => {
+                const chip = document.createElement('span');
+                chip.className = 'chip' + (state.effectFilter === effect ? ' active' : '');
+                chip.textContent = effect;
+                chip.addEventListener('click', () => { state.effectFilter = effect; syncFilterChips(); render(); });
+                effectContainer.appendChild(chip);
+            });
+        }
+
+        function syncFilterChips() {
+            document.querySelectorAll('.filter-chips .chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            // Mark active class
+            if (state.classFilter) {
+                const clsChips = document.querySelectorAll('#classFilterChips .chip');
+                clsChips.forEach(c => { if (c.textContent === state.classFilter) c.classList.add('active'); });
+            } else {
+                const first = document.querySelector('#classFilterChips .chip:first-child');
+                if (first) first.classList.add('active');
+            }
+            if (state.typeFilter) {
+                const typeChips = document.querySelectorAll('#typeFilterChips .chip');
+                typeChips.forEach(c => { if (c.textContent === state.typeFilter) c.classList.add('active'); });
+            } else {
+                const first = document.querySelector('#typeFilterChips .chip:first-child');
+                if (first) first.classList.add('active');
+            }
+            if (state.effectFilter) {
+                const effChips = document.querySelectorAll('#effectFilterChips .chip');
+                effChips.forEach(c => { if (c.textContent === state.effectFilter) c.classList.add('active'); });
+            } else {
+                const first = document.querySelector('#effectFilterChips .chip:first-child');
+                if (first) first.classList.add('active');
+            }
+        }
 
         function filterDrugs() {
             const query = state.query.trim().toLowerCase();
@@ -61,7 +142,10 @@ if (!window.PharmaNerdFiltersInit) {
                 const matchQuery =
                     !query ||
                     (drug.allNames || []).some((n) => n.toLowerCase().includes(query));
-                return matchQuery;
+                const matchClass = !state.classFilter || drug.class === state.classFilter;
+                const matchType = !state.typeFilter || drug.type === state.typeFilter;
+                const matchEffect = !state.effectFilter || (drug.effectProfile || []).includes(state.effectFilter);
+                return matchQuery && matchClass && matchType && matchEffect;
             });
         }
 
@@ -284,14 +368,10 @@ if (!window.PharmaNerdFiltersInit) {
             });
         }
 
-        function initFilters() {
-            // filters were removed from the page — nothing to initialize
-            return;
-        }
-
         function init() {
             wireDrugLinks();
-            initFilters();
+            renderFilterChips();
+            syncFilterChips();
             setupSort();
             setupSearch();
             setupSurprise();

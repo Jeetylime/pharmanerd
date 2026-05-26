@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PharmaNerd | Not Found</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <style>
+        .not-found {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 50vh;
+            gap: 16px;
+        }
+
+        .not-found h2 {
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .not-found p {
+            color: var(--muted);
+            max-width: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar"></aside>
+        <main class="main">
+            <div class="not-found">
+                <h2>404</h2>
+                <h3>Page not found</h3>
+                <p>The drug or page you're looking for doesn't exist in our database.</p>
+                <div style="display:flex;gap:12px;margin-top:8px;">
+                    <a class="btn" href="index.html">Back to browse</a>
+                    <a class="btn secondary" href="search.html">Search again</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="scripts/nav.js"></script>
+</body>
+
+</html>

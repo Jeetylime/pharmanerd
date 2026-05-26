@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PharmaNerd | My Stash</title>
+    <link rel="stylesheet" href="styles/main.css" />
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar"></aside>
+        <main class="main">
+            <header class="page-header">
+                <div class="page-title">
+                    <h2>My Stash</h2>
+                    <p>Your saved favorites, persisted across sessions.</p>
+                </div>
+                <div>
+                    <button class="btn secondary" id="clearStashBtn" style="display:none;">Clear stash</button>
+                </div>
+            </header>
+
+            <section class="section">
+                <p class="empty-state" id="stashEmpty">No favorites yet. Tap "Stash" on a drug card to add one.</p>
+                <div class="card-grid" id="stashGrid"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="scripts/nav.js"></script>
+    <script src="scripts/data.js"></script>
+    <script src="scripts/components.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script>
+        (function () {
+            function renderStash() {
+                const grid = document.getElementById('stashGrid');
+                const empty = document.getElementById('stashEmpty');
+                const clearBtn = document.getElementById('clearStashBtn');
+                if (!grid) return;
+
+                const { DRUGS } = window.PharmaNerdData || {};
+                const { getFavorites, createDrugCard } = window.PharmaNerdUI || {};
+
+                if (!getFavorites || !DRUGS) return;
+
+                const favorites = getFavorites();
+                grid.innerHTML = '';
+
+                if (favorites.length === 0) {
+                    empty.style.display = 'block';
+                    if (clearBtn) clearBtn.style.display = 'none';
+                    return;
+                }
+
+                empty.style.display = 'none';
+                if (clearBtn) clearBtn.style.display = '';
+
+                favorites
+                    .map(function (name) {
+                        return DRUGS.find(function (d) { return d.name === name; });
+                    })
+                    .filter(Boolean)
+                    .forEach(function (drug) {
+                        if (createDrugCard) {
+                            grid.appendChild(createDrugCard(drug));
+                        }
+                    });
+
+                if (window.PharmaNerdUI && window.PharmaNerdUI.wireDrugLinks) {
+                    window.PharmaNerdUI.wireDrugLinks();
+                }
+            }
+
+            function initStash() {
+                renderStash();
+
+                const clearBtn = document.getElementById('clearStashBtn');
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', function () {
+                        if (confirm('Clear all favorites?')) {
+                            try {
+                                localStorage.setItem('pharmanerd-favorites', JSON.stringify([]));
+                                window.dispatchEvent(new CustomEvent('pharmanerd:stash'));
+                                renderStash();
+                            } catch (e) { }
+                        }
+                    });
+                }
+
+                window.addEventListener('pharmanerd:stash', renderStash);
+            }
+
+            if (window.PharmaNerdData && window.PharmaNerdData.DRUGS) {
+                initStash();
+            } else {
+                window.addEventListener('pharmanerd:data-loaded', initStash);
+            }
+        })();
+    </script>
+</body>
+
+</html>

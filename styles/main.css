@@ -1950,6 +1950,266 @@ html.popup-mode .glass {
     padding-top: 8px;
 }
 
+/* Filter chips on browse page */
+.filter-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 48px;
+}
+
+.filter-group .chips {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.filter-group .chip {
+    cursor: pointer;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(174, 234, 255, 0.1);
+    color: var(--muted);
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.filter-group .chip:hover {
+    background: rgba(87, 215, 255, 0.1);
+    border-color: var(--accent);
+    color: var(--text);
+}
+
+.filter-group .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 600;
+}
+
+/* Browse list view - compact list instead of cards */
+.browse-list .card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.browse-list .drug-card {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    padding: 10px 14px;
+    gap: 10px;
+}
+
+.browse-list .drug-card__icon {
+    width: 40px;
+    height: 40px;
+}
+
+.browse-list .drug-card__icon-image {
+    width: 20px;
+    height: 20px;
+}
+
+.browse-list .drug-card h3 {
+    font-size: 16px;
+}
+
+.browse-list .stats-bar {
+    display: none;
+}
+
+.browse-list .drug-card__body .tags {
+    display: none;
+}
+
+/* Compact cards mode */
+.pn-compact-cards .drug-card {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    padding: 10px 12px;
+    gap: 8px;
+}
+
+.pn-compact-cards .drug-card__icon {
+    width: 44px;
+    height: 44px;
+}
+
+.pn-compact-cards .drug-card__icon-image {
+    width: 22px;
+    height: 22px;
+}
+
+.pn-compact-cards .drug-card h3 {
+    font-size: 17px;
+}
+
+.pn-compact-cards .stats-bar {
+    padding: 8px;
+    font-size: 11px;
+    gap: 6px;
+}
+
+.pn-compact-cards .drug-card__body .tags .tag {
+    font-size: 11px;
+    padding: 3px 8px;
+}
+
+.pn-compact-cards .drug-card__meta .badge {
+    font-size: 10px;
+    padding: 3px 8px;
+}
+
+/* Research chemical hidden */
+[data-accent="violet"] .drug-card {
+    /* Violet accent effects */
+}
+
+/* Interaction sensitivity levels */
+[data-interaction-level="major"] .interaction-item:not(:has(.severity-high)),
+[data-interaction-level="major"] .severity:not(.severity-high) {
+    display: none !important;
+}
+
+[data-interaction-level="moderate"] .severity.mild {
+    display: none !important;
+}
+
+/* RSS feed style for browse-list compact layout */
+.browse-list .drug-card__actions {
+    display: none;
+}
+
+/* Mobile responsive */
+@media (max-width: 860px) {
+    .app-shell {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-width: 100%;
+        flex-direction: row;
+        padding: 8px 12px;
+        gap: 4px;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar .brand {
+        display: none;
+    }
+
+    .sidebar .nav {
+        flex-direction: row;
+        width: 100%;
+        gap: 4px;
+    }
+
+    .sidebar .nav-left {
+        display: flex;
+        gap: 2px;
+        overflow-x: auto;
+        flex-shrink: 0;
+    }
+
+    .sidebar .nav-link {
+        font-size: 12px;
+        padding: 6px 10px;
+        white-space: nowrap;
+        border: none;
+    }
+
+    .sidebar .nav-link svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .sidebar .nav-right {
+        display: none !important;
+    }
+
+    .main {
+        padding: 12px 14px 84px;
+        width: 100%;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .page-header .page-title h2 {
+        font-size: 20px;
+    }
+
+    .snapshot-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .drug-card {
+        padding: 10px 12px;
+    }
+
+    .drug-card__icon {
+        display: none;
+    }
+
+    .stats-bar {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .stats-bar>div {
+        min-width: 80px;
+    }
+
+    .effects-columns {
+        flex-direction: column;
+    }
+
+    .filter-chips {
+        gap: 6px;
+    }
+
+    .filter-group {
+        gap: 4px;
+    }
+
+    .filter-label {
+        font-size: 10px;
+        min-width: 36px;
+    }
+
+    .filter-group .chip {
+        font-size: 11px;
+        padding: 2px 8px;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     * {
         animation: none !important;

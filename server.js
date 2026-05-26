@@ -348,8 +348,15 @@ async function handleStatic(req, res, url) {
         res.writeHead(200, { "Content-Type": MIME[ext] || "application/octet-stream" });
         res.end(data);
     } catch (error) {
-        res.writeHead(404);
-        res.end("Not found");
+        // Serve custom 404 page
+        try {
+            const notFound = await readFile(path.join(ROOT, "404.html"));
+            res.writeHead(404, { "Content-Type": "text/html" });
+            res.end(notFound);
+        } catch (e) {
+            res.writeHead(404);
+            res.end("Not found");
+        }
     }
 }
 
